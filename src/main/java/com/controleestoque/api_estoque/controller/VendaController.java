@@ -14,50 +14,40 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.controleestoque.api_estoque.model.Cliente;
-import com.controleestoque.api_estoque.repository.ClienteRepository;
+import com.controleestoque.api_estoque.model.Venda;
+import com.controleestoque.api_estoque.repository.VendaRepository;
+import com.controleestoque.api_estoque.service.VendaService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/clientes")
+@RequestMapping("/api/vendas")
 @RequiredArgsConstructor
-public class ClienteController {
+public class VendaController {
     
-    private final ClienteRepository clienteRepository;
+    private final VendaService vendaService;
+    private final VendaRepository vendaRepository;
 
     @GetMapping
-    public List<Cliente> getAllClientes() {
+    public List<Venda> getAllVendas() {
         return clienteRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Cliente> getClienteById(@PathVariable Long id) {
-        return clienteRepository.findById(id)
+    public ResponseEntity<Venda> getVendaById(@PathVariable Long id) {
+        return vendaRepository.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Cliente createCliente(@RequestBody Cliente cliente) {
-        return clienteRepository.save(cliente);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> updateCliente(
-        @PathVariable Long id, @RequestBody Cliente clienteDetails) {
-        return clienteRepository.findById(id)
-            .map(cliente -> {
-                cliente.setNome(clienteDetails.getNome());
-                cliente.setEmail(clienteDetails.getEmail());
-                return ResponseEntity.ok(clienteRepository.save(cliente));
-            })
-            .orElse(ResponseEntity.notFound().build());
+    public Venda createVenda(@RequestBody Venda venda) {
+        return vendaRepository.save(venda);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteVenda(@PathVariable Long id) {
         if (!clienteRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
