@@ -36,7 +36,7 @@ public class ProdutoController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Produto> getCategoriaById(@PathVariable Long id) {
+    public ResponseEntity<Produto> getProdutoById(@PathVariable Long id) {
         return produtoRepository.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());

@@ -14,54 +14,54 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.controleestoque.api_estoque.model.Fornecedor;
-import com.controleestoque.api_estoque.repository.FornecedorRepository;
+import com.controleestoque.api_estoque.model.Cliente;
+import com.controleestoque.api_estoque.repository.ClienteRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/fornecedores")
+@RequestMapping("/api/clientes")
 @RequiredArgsConstructor
-public class FornecedorController {
+public class ClienteController {
     
-    private final FornecedorRepository fornecedorRepository;
+    private final ClienteRepository clienteRepository;
 
     @GetMapping
-    public List<Fornecedor> getAllFornecedores() {
-        return fornecedorRepository.findAll();
+    public List<Cliente> getAllclientes() {
+        return clienteRepository.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Fornecedor> getFornecedorById(@PathVariable Long id) {
-        return fornecedorRepository.findById(id)
+    public ResponseEntity<Cliente> getclienteById(@PathVariable Long id) {
+        return clienteRepository.findById(id)
         .map(ResponseEntity::ok)
         .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Fornecedor createFornecedor(@RequestBody Fornecedor fornecedor) {
-        return fornecedorRepository.save(fornecedor);
+    public Cliente createCliente(@RequestBody Cliente cliente) {
+        return clienteRepository.save(cliente);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Fornecedor> updateFornecedor(
-        @PathVariable Long id, @RequestBody Fornecedor fornecedorDetails) {
-        return fornecedorRepository.findById(id)
-            .map(fornecedor -> {
-                fornecedor.setNome(fornecedorDetails.getNome());
-                Fornecedor updatedFornecedor = fornecedorRepository.save(fornecedor);
-                return ResponseEntity.ok(updatedFornecedor);
+    public ResponseEntity<Cliente> updateCliente(
+        @PathVariable Long id, @RequestBody Cliente clienteDetails) {
+        return clienteRepository.findById(id)
+            .map(cliente -> {
+                cliente.setNome(clienteDetails.getNome());
+                cliente.setEmail(clienteDetails.getEmail());
+                return ResponseEntity.ok(clienteRepository.save(cliente));
             })
             .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteFornecedor(@PathVariable Long id) {
-        if (!fornecedorRepository.existsById(id)) {
+    public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
+        if (!clienteRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        fornecedorRepository.deleteById(id);
+        clienteRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
