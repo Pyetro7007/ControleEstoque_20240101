@@ -1,8 +1,11 @@
 package com.controleestoque.api_estoque.controller;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.controleestoque.api_estoque.model.Fornecedor;
 import com.controleestoque.api_estoque.model.Produto;
 import com.controleestoque.api_estoque.repository.CategoriaRepository;
 import com.controleestoque.api_estoque.repository.FornecedorRepository;
@@ -44,25 +48,30 @@ public class ProdutoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Transactional
     public ResponseEntity<Produto> createProduto(@RequestBody Produto produto) {
         if (produto.getCategoria() == null || produto.getCategoria().getId() == null) {
             return ResponseEntity.badRequest().build();
         }
         categoriaRepository.findById(produto.getCategoria().getId())
             .ifPresent(produto::setCategoria);
-
         
         if (produto.getFornecedores() != null && !produto.getFornecedores().isEmpty()) {
+            
+            Set<Fornecedor> fornecedoresDoRequest = new HashSet<>(produto.getFornecedores());
+
             produto.getFornecedores().clear();
 
-            produto.getFornecedores().forEach(fornecedor -> {
+            fornecedoresDoRequest.forEach(fornecedor -> {
                 fornecedorRepository.findById(fornecedor.getId())
-                    .ifPresent(produto.getFornecedores()::add);
+                    .ifPresent(fornecedorEncontrado -> {
+                        produto.getFornecedores().add(fornecedorEncontrado);
+                    });
             });
         }
 
         if (produto.getEstoque() != null) {
-        produto.getEstoque().setProduto(produto);
+            produto.getEstoque().setProduto(produto);
         }
         
         Produto savedProduto = produtoRepository.save(produto);

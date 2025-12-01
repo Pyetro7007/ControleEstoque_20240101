@@ -8,12 +8,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.controleestoque.api_estoque.dto.VendaRequestDTO;
+import com.controleestoque.api_estoque.exception.EstoqueInsuficienteException;
 import com.controleestoque.api_estoque.model.Venda;
 import com.controleestoque.api_estoque.repository.VendaRepository;
 import com.controleestoque.api_estoque.service.VendaService;
@@ -30,7 +30,7 @@ public class VendaController {
 
     @GetMapping
     public List<Venda> getAllVendas() {
-        return clienteRepository.findAll();
+        return vendaRepository.findAll();
     }
 
     @GetMapping("/{id}")
@@ -41,17 +41,23 @@ public class VendaController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Venda createVenda(@RequestBody Venda venda) {
-        return vendaRepository.save(venda);
+    public ResponseEntity<?> registrarVenda(@RequestBody VendaRequestDTO request) {
+        try {
+            Venda vendaRegistrada = vendaService.registrarVenda(request);
+            return new ResponseEntity<>(vendaRegistrada, HttpStatus.CREATED);
+        } catch (EstoqueInsuficienteException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteVenda(@PathVariable Long id) {
-        if (!clienteRepository.existsById(id)) {
+        if (!vendaRepository.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
-        clienteRepository.deleteById(id);
+        vendaRepository.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 }
