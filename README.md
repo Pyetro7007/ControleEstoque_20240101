@@ -24,7 +24,7 @@ Após clonar, será necessário acessar a pasta DS_ControleEstoqueAPI_PyetroFabr
 
 Como este projeto utiliza Maven, a instalação das dependências geralmente ocorre automaticamente durante o build, mas você pode forçar o download e build com:
 
-	mvn clean install
+	./mvnw clean install
 
 ---
 
@@ -38,7 +38,7 @@ Além disso, o nome do banco de dados uqe deverá ser criado, por padrão, deve 
 
 Para iniciar o servidor Spring Boot, use o comando:
 
-	mvn spring-boot:run
+	./mvnw spring-boot:run
 
 O servidor da API estará disponível em http://localhost:8080 (porta padrão do Spring Boot).
 
