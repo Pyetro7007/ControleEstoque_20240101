@@ -87,4 +87,6 @@ O endpoint de registro de venda é o mais importante, pois aciona a lógica de *
 
 ---
 
-Para mais informações, segue um vídeo mostrando algumas das funcionalidades da API: 
+Para mais informações, segue um vídeo mostrando algumas das funcionalidades da API: https://youtu.be/LuRj3SmDS6s
+
+OBS: Peço perdão pelo atraso do vídeo, houve erros no upload, mas o vídeo está completo e entregue
